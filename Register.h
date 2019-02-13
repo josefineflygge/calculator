@@ -1,6 +1,3 @@
-//
-// Created by jflyg on 2019-02-10.
-//
 #include <iostream>
 #include <list>
 #include <vector>
@@ -8,7 +5,10 @@
 
 using namespace std;
 
-/** Declarations for class Register **/
+/** REGISTER
+ * Class declarations
+ * **/
+
 class Register {
 
 private:
@@ -43,17 +43,21 @@ public:
     //Multiply an integer with a register
     void operator* (int& val);
 
-    //stores operations until print
+    //Stores operations until print
     void addOperation(string op, string value);
 
-    //clear list of operations (used on print)
+    //Clear list of operations
     void clearOperationList();
 
     //Evaluates the value of a register (at print)
-    void calcNewValue(string op, string val, list<Register> &regs);
+    int calcNewValue(list<Register> regs);
 
-    //Displays an expression
-    //friend
+    //Check if string is only numerical
+    bool isInt(string str);
+    //Calculate new values
+    int performCalculation(string op, int opVal);
+
+    //Displays the value of a register (lazy evaluation)
     void print(list<Register> regs);
 
 };

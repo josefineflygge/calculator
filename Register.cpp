@@ -1,9 +1,5 @@
-
-//
-// Created by jflyg on 2019-02-10.
-//
-
 #include "Register.h"
+#include <regex>
 
 /** REGISTER
  * Class definitions for member functions
@@ -25,7 +21,7 @@ int Register::getValue(){
     return value;
 }
 
-
+//get the list of operations stored
 vector<pair<string,string>>  Register::getOpList(){
     return opList;
 }
@@ -48,30 +44,52 @@ void Register::operator * (int& val) {
 
 //Stores operations until used on print
 void Register::addOperation(string op, string val){
-
-    //adds an operation to the list
     opList.push_back(make_pair(op,val));
 }
 
 //Evaluates the value of a register (at print)
-void Register::calcNewValue(string op, string val, list<Register> &regs){
+int Register::calcNewValue(list<Register> regs){
 
     bool isReg = false;
-    int opVal = 0;
+    bool isInteger = false;
+    string op;
+    string val;
 
-    //check if the value is a register
-    list<Register> :: iterator it;
-    for(it = regs.begin(); it != regs.end(); ++it)
-        if(it->getName() == val){
-           opVal = it->getValue();
-           isReg = true;
-    }
+        //For each operation and value in opList
+        for(unsigned i=0; i < opList.size(); i++){
+            op = opList.at(i).first;
+            val = opList.at(i).second;
 
-    //If the value is a number, convert to int
-    if(!isReg){
-         if(isdigit(val[0])) opVal = stoi(val); //do for all characters
-         else cout << "Wrong input";
-    }
+            //check if the value is integer
+            isInteger = regex_match(val, regex("[+-]?[0-9]+"));
+
+            //Value is a number -> convert to int
+            if(isInteger){
+                performCalculation(op, stoi(val));
+            }
+            else{
+                //Check if value is stored register
+                for(list<Register> :: iterator it = regs.begin(); it != regs.end(); ++it){
+                    if(it->getName() == val){
+                        performCalculation(op, it->calcNewValue(regs)); //find new value recursively
+                        isReg = true;
+                    }
+                }
+            }
+            if(!isInteger && !isReg){
+                cout << "Error: '" + val +"' is not a valid value!" << endl;
+            }
+
+        }
+
+
+    return value;
+
+
+}
+
+//Do the operation on the registerobject
+int Register::performCalculation(string op, int opVal){
 
     //perform operation depending on word
     if(op == "add") value=value+opVal;
@@ -80,27 +98,20 @@ void Register::calcNewValue(string op, string val, list<Register> &regs){
 
     else if (op == "multiply") value=value*opVal;
 
-    else cout << "Wrong input!";
+    else cout << "Error: '" + op +"' is not a valid operation!" << endl;
+
+    return value;
 
 }
 
-
+//removes all operations in list
 void Register::clearOperationList(){
-
-    //removes all operations in list
     opList.clear();
 }
 
-//for each pair in list, evaluate the new value and then print
+
+//Evaluate the new value and then print
 void Register::print(list<Register> regs){
-
-        for(unsigned i=0; i < opList.size(); i++){
-           calcNewValue(opList.at(i).first, opList.at(i).second, regs);
-        }
-
-    //print the value
-    cout << value << endl;
-
-    //clear the list of operaations
+    cout << calcNewValue(regs) << endl;
     clearOperationList();
 }

@@ -1,0 +1,9 @@
+regist3r add 5
+print regist3r
+123 add 6
+print 123
+quit!
+B add 10
+B addd 2
+B add noexist
+print B

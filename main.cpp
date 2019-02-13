@@ -11,60 +11,85 @@
 using namespace std;
 
 /** SECTRA ARBETSPROV - SIMPLE CALCULATOR
- * by Josefine Flügge
- */
+
+The simple calculator can perform operations in a set of registers.
+Operations: add, multiply, subtract
+Value format: integer or register.
+
+Input is read from text file,
+one command per line.
+
+Syntax:
+<register> <operation> <value>
+print <register>
+quit
+
+**/
 
 
 //Get the saved register object with name "n"
 Register getRegister(list<Register> regs, string n);
-
 void printWelcomeText();
+bool isInt(string str);
 
-int main() {
+int main(int argc, char* argv[]) {
 
-    string fileName;
-    list<Register> registers;
-    ifstream inFile;   //inreader from file
+
+    list<Register> registers; //added registers
+    ifstream inFile;  //inreader from file
     string line;
-    regex ws_re("\\s+"); //used to split by whitespaces
+    regex ws_re("\\s+"); //used to split by whitespaces in strings
     bool regExists = false;
 
-    printWelcomeText();
+    //right amount of input arguments
+    if (argc == 2) {
 
-    //allow user to pick a file
-    cin >> fileName;
-
-    inFile.open(fileName+".txt");
-
-    if (!inFile)
-    {
-        cout << "Text file not found! :(" << endl;
-        return 0;
+        inFile.open(argv[1]);
+        if (!inFile) {
+        cerr << "Textfile not found! :(" << endl;
+            return 1;
+        }
     }
+    // too many or few input arguments
+    else
+        {
+        // Tell the user how to run the program
+        cerr << "Error: Incorrect number of input arguments. Usage: " << argv[0] << " filepath" << std::endl;
+        return 1;
+        }
+
+    printWelcomeText();
 
 
     if (inFile.is_open())
     {
-        //get all them lines
+        //Get all them lines
         while (getline(inFile,line))
         {
-            //make input case insensitive
+            //Make input case insensitive
             for(int i = 0; i < (int)line.length(); ++i) {
             line[i] = tolower(line[i]);
             }
 
-            //split words in line by whitespace into vector
-            std::vector<std::string> splittedLine{
-            std::sregex_token_iterator(line.begin(), line.end(), ws_re, -1), {}};
+            //Split words in line by whitespace into vector
+            vector<string> splittedLine{
+            sregex_token_iterator(line.begin(), line.end(), ws_re, -1), {}};
 
 
             int wordCount = (int)splittedLine.size();
 
-            //if the line contains a mathematical operation
+            //If the line contains a mathematical operation
             if(wordCount == 3){
-
                 regExists = false;
 
+                //Only numerical reg is invalid
+                if(isInt(splittedLine.at(0))){
+                    cout << "Error: '"+splittedLine.at(0)+"' is an invalid register name." << endl;
+                    continue;
+                }
+
+                /* Check if the register already exists. If it does,
+                    store the operation and value in the object */
                 list<Register> :: iterator it;
                 for(it = registers.begin(); it != registers.end(); ++it){
                     if(it->getName() == splittedLine.at(0)){
@@ -73,6 +98,8 @@ int main() {
                     }
                 }
 
+                /* If the register is new, add it to
+                the list and store its operation and value */
                 if(!regExists){
                     Register R(0,splittedLine.at(0));
                     R.addOperation(splittedLine.at(1),splittedLine.at(2));
@@ -89,8 +116,12 @@ int main() {
                     }
                     else if(splittedLine.at(0) == "quit"){
                         cout << endl << "Closing application..." << endl;
+                        break;
                     }
-                    else cout << "Wrong input!";
+                    else{
+                        cout << "Error: Invalid command!" << endl;
+                        continue;
+                    }
                 }
 
         }
@@ -110,16 +141,24 @@ Register getRegister(list<Register> regs, string n){
             return *it;
         }
     }
+    cout << "Error: no register available with name '" + n +"'." << endl;
 }
+
+
+//Check if string is only numerical
+bool isInt(string str){
+
+    return regex_match(str, regex("[+-]?[0-9]+"));
+
+}
+
 
 //Static text information
 void printWelcomeText(){
 
+    cout << endl << "________________________________________" << endl;
     cout << endl << "Hello, welcome to the simple calculator!";
-    cout << endl << "______________________________________" << endl << endl;
-    cout << "Feel free to import a file with a set of operations on each line." << endl;
-    cout << "The lines can consist of: <register> <operation> <value>, print <register>, quit." << endl;
-    cout << "possible operations: add, subtract or mulitply. Value can be a register or an integer." << endl;
-    cout << "A register can have any alphanumerical name." << endl << endl;
-    cout << ">> Please enter filename: ";
+    cout << endl << "________________________________________" << endl << endl;
+    cout << endl << "Result: " << endl << endl;
+
 }
