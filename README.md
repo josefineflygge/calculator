@@ -9,7 +9,7 @@ print <register>
 quit
 ```
 
-Where allowed operations are add, subtract and multiply.
+Were allowed operations are add, subtract and multiply.
 'value' can be an integer value or a register.
 
 ## To run application from console
