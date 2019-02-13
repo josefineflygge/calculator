@@ -21,7 +21,7 @@ Simple_Calculator.exe input.txt
 ```
 
 ## Input
-- The program allows the user to enter a file with a set of commands on each line.
+- The program allows the user to enter a file with a set of commands, one per line.
 - Names consisting of alphanumeric characters are allowed as register names.(*)
 - All input is case insensitive
 - Invalid commands are ignored and logged to the console
