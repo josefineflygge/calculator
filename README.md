@@ -10,7 +10,7 @@ quit
 ```
 
 Were allowed operations are add, subtract and multiply.
-'value' can be an integer value or a register.
+`value` can be an integer value or a register.
 
 ## To run application from console
 ```
@@ -27,7 +27,7 @@ Simple_Calculator.exe input.txt
 - Invalid commands are ignored and logged to the console
 
 ## Evaluation
-The calculator uses lazy evaluation to evaluate the set of commands for a register only on 'print'.
+The calculator uses lazy evaluation to evaluate the set of commands for a register only on `print`.
 
 ## Assumptions and modifications
 - The program currently takes input from a file, but could be modified to be read from the console.
