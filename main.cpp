@@ -116,7 +116,7 @@ int main(int argc, char* argv[]) {
                     }
                     else if(splittedLine.at(0) == "quit"){
                         cout << endl << "Closing application..." << endl;
-                        break;
+                        return 0;
                     }
                     else{
                         cout << "Error: Invalid command!" << endl;
